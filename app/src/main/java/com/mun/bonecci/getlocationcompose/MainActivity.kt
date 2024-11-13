@@ -30,7 +30,6 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.mun.bonecci.getlocationcompose.ui.theme.GetLocationComposeTheme
-import java.lang.Exception
 
 class MainActivity : ComponentActivity() {
 
@@ -62,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         onPermissionGranted = {
                             // Callback when permission is granted
                             showPermissionResultText = true
+                            permissionResultText = "Permission Granted..."
                             // Attempt to get the last known user location
                             getLastUserLocation(
                                 onGetLastLocationSuccess = {
@@ -145,7 +145,17 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
             )
-        )
+        ) { permissionsMap ->
+            val arePermissionsGranted = permissionsMap.values.reduce { acc, next ->
+                acc && next
+            }
+
+            if (arePermissionsGranted) {
+                onPermissionGranted.invoke()
+            } else {
+                onPermissionDenied.invoke()
+            }
+        }
 
         // Use LaunchedEffect to handle permissions logic when the composition is launched.
         LaunchedEffect(key1 = permissionState) {
