@@ -140,12 +140,13 @@ class MainActivity : ComponentActivity() {
         onPermissionsRevoked: () -> Unit
     ) {
         // Initialize the state for managing multiple location permissions.
+        //It takes a list of permissions as input and a lambda function as a callback.
         val permissionState = rememberMultiplePermissionsState(
             listOf(
                 Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
             )
-        ) { permissionsMap ->
+        ) { permissionsMap -> //Tommy fix
             val arePermissionsGranted = permissionsMap.values.reduce { acc, next ->
                 acc && next
             }
